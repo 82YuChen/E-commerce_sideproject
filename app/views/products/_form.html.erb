@@ -1,0 +1,27 @@
+<%= form_for(@product) do |form| %>
+
+  <div>
+    <%= form.label :商品名稱 %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :商品類型 %>
+    <%= form.text_field :subtitle %>
+  </div>
+
+  <div>
+    <%= form.label :商品價格 %>
+    <%= form.text_field :price %>
+  </div>
+
+  <div>
+    <%= form.label :商品描述 %>
+    <%= form.text_area :description %>
+  </div>
+
+  <%= form.submit "送出" %>
+
+<% end %>
+
+<%= link_to "取消新增", products_path %>
