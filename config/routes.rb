@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :products
 
   namespace :admin do
+    resources :users, only: %i[index edit update delete]
   end
   
   root 'stores#home'

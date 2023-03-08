@@ -1,4 +1,6 @@
 class ProductsController < ApplicationController
+  include Pundit
+  before_action :authenticate_admin, except: [:index, :show]
   before_action :find_product, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -10,10 +12,12 @@ class ProductsController < ApplicationController
 
   def new
     @product = Product.new
+    authorize @product
   end
 
   def create
     @product = Product.new(params_product)
+    authorize @product
     if @product.save
       redirect_to products_path, notice: "商品新增完成"
     else
