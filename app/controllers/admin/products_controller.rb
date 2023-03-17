@@ -1,6 +1,5 @@
-class ProductsController < ApplicationController
-  include Pundit
-  before_action :authenticate_admin, except: [:index, :show]
+class Admin::ProductsController < ApplicationController
+  before_action :authenticate_user!
   before_action :find_product, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -11,15 +10,17 @@ class ProductsController < ApplicationController
   end
 
   def new
+    if !current_user.admin?
+      redirect_to root_path, notice: "您的權限不足"
+      return
+    end
     @product = Product.new
-    authorize @product
   end
 
   def create
     @product = Product.new(params_product)
-    authorize @product
     if @product.save
-      redirect_to products_path, notice: "商品新增完成"
+      redirect_to admin_products_path, notice: "商品新增完成"
     else
       render :new
     end
@@ -30,7 +31,7 @@ class ProductsController < ApplicationController
 
   def update
     if @product.update(params_product)
-      redirect_to products_path, notice: "商品更新完成"
+      redirect_to admin_products_path, notice: "商品更新完成"
     else
       render :edit
     end
@@ -38,10 +39,11 @@ class ProductsController < ApplicationController
 
   def destroy
     @product.destroy
-    redirect_to products_path, notice: "商品已經刪除"
+    redirect_to admin_products_path, notice: "商品已經刪除"
   end
 
   private
+
   def params_product
     params.require(:product).permit(:name, :price, :description, :store_id, :subtitle, :category, :size)
   end
